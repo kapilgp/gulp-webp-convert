@@ -1,0 +1,49 @@
+{
+  "name": "gulp-webp-convert",
+  "version": "1.0.0",
+  "description": "Convert automatically all jpg, jpeg, png into webp images from multi folders as folders got changed in files.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kapilgp/gulp-webp-convert.git"
+  },
+  "keywords": [
+    "gulpplugin",
+    "convert-multi-files",
+    "gulp-webp-convert",
+    "webp-convert",
+    "webp",
+    "image",
+    "img",
+    "picture",
+    "photo",
+    "png",
+    "jpg",
+    "jpeg"
+  ],
+  "author": {
+    "name": "Kapil Gupta",
+    "email": "kapil.gp@gmail.com"
+  },
+  "engines": {
+    "node": ">=0.10.0"
+  },
+  "files": [
+    "index.js"
+  ],
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kapilgp/gulp-webp-convert/issues"
+  },
+  "homepage": "https://github.com/kapilgp/gulp-webp-convert#readme",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-changed": "^3.1.0",
+    "gulp-logger": "0.0.2",
+    "gulp-plumber": "^1.1.0",
+    "gulp-webp": "^2.3.0"
+  }
+}

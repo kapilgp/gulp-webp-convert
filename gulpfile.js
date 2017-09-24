@@ -46,7 +46,7 @@ var webpConvertor = {
 		    gulp.task(task, function(){
 		        //console.log('this.currentStartTaskName: ' + this.currentStartTaskName);
 		        //console.log('this.currentRunTaskName: ' + this.currentRunTaskName);
-		        return self._converter(tasks[this.currentRunTaskName].path);
+		        return self._converter(tasks[this.currentRunTaskName]);
 		    });
 		}
 
@@ -61,20 +61,21 @@ var webpConvertor = {
 		});
 	},
 
-	_converter: function (path) {
+	_converter: function (task) {
 		var self = this;
 	    //console.log(path + '/**/*.' + ext);
-	    return gulp.src([path + '/**/*.' + self._ext])
-	        .pipe(changed(path, {extension: '.webp'}))
+	    return gulp.src([task.sourcePath + '/**/*.' + self._ext])
+	        .pipe(changed(task.destPath, {extension: '.webp'}))
 	        .pipe(plumber())
 	        .pipe(logger({
-	            before: path + ': Started WEBP Conversion...',
-	            after: path + ': WEBP Conversion complete!',
+	            before: task.sourcePath + ': Started WEBP Conversion...',
+	            after: task.sourcePath + ': WEBP Conversion complete!',
 	            extname: '.webp',
+	            dest: '/' + task.destPath,
 	            showChange: true
 	        }))
 	        .pipe(webp())
-	        .pipe(gulp.dest(path));
+	        .pipe(gulp.dest(task.destPath));
 	},
 
 	_onERR: function(error) {

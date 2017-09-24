@@ -4,7 +4,7 @@
   "description": "Convert automatically all jpg, jpeg, png into webp images from multi folders as folders got changed in files.",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "webp-convert": "node index"
   },
   "repository": {
     "type": "git",

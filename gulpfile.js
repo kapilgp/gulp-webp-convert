@@ -86,18 +86,4 @@ var webpConvertor = {
 	}
 }
 
-// Update Folder Paths
-
-var tasks = {
-    'webp-dest1': {
-        path: './dest/dest1',
-        watchPath: 'dest/dest1'
-    },
-    'webp-dest2': {
-        path: './dest/dest2',
-        watchPath: 'dest/dest2'
-    }
-};
-
-
-webpConvertor.init(tasks);
+module.exports = webpConvertor;

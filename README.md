@@ -26,11 +26,12 @@ Convert automatically all jpg, jpeg, png into webp images from multi folders as 
 ## Command
 
 ```
-	npm run webp-convert
-	
-With Forever: forever start -c "npm run webp-convert" index.js
+npm run webp-convert
 ```
-
+## Command With forever
+```
+forever start -c "npm run webp-convert" index.js
+```
 
 ### Feedback
 

@@ -28,3 +28,12 @@ Convert automatically all jpg, jpeg, png into webp images from multi folders as 
 ```
 	npm run webp-convert
 ```
+
+
+### Feedback
+
+Pull requests, feature ideas and bug reports are welcome
+
+### License
+
+MIT

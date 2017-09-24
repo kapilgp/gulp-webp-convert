@@ -29,9 +29,65 @@ gulp.Gulp.prototype._runTask = function (task) {
     _runTask.apply(this, arguments);
 };
 
+//Main Login HERE
+var webpConvertor = {
 
-var initialTasks = [];
-var ext = '{png,jpeg,jpg,PNG,JPG,JPEG}'; 
+	_initialTasks: [],
+	_ext: '{png,jpeg,jpg,PNG,JPG,JPEG}',
+
+	init: function(tasks) {
+		//Create Tasks
+		var self = this;
+
+		for (var task in tasks) {
+
+		    self._initialTasks.push(task);
+
+		    gulp.task(task, function(){
+		        //console.log('this.currentStartTaskName: ' + this.currentStartTaskName);
+		        //console.log('this.currentRunTaskName: ' + this.currentRunTaskName);
+		        return self._converter(tasks[this.currentRunTaskName].path);
+		    });
+		}
+
+		//Watch Tasks
+		gulp.task('webp', self._initialTasks, function() { 
+
+		    for (var task in tasks) {
+		        //console.log(task, tasks[task].watchPath, tasks[task].path);
+		        gulp.watch(tasks[task].watchPath + '/**/*.' + self._ext, [task])
+		            .on('error', self._onERR);
+		    }
+		});
+	},
+
+	_converter: function (path) {
+		var self = this;
+	    //console.log(path + '/**/*.' + ext);
+	    return gulp.src([path + '/**/*.' + self._ext])
+	        .pipe(changed(path, {extension: '.webp'}))
+	        .pipe(plumber())
+	        .pipe(logger({
+	            before: path + ': Started WEBP Conversion...',
+	            after: path + ': WEBP Conversion complete!',
+	            extname: '.webp',
+	            showChange: true
+	        }))
+	        .pipe(webp())
+	        .pipe(gulp.dest(path));
+	},
+
+	_onERR: function(error) {
+		// silently catch 'ENOENT' error typically caused by renaming watched folders
+	    if (error.code === 'ENOENT') {
+	        console.log(error)
+	        return;
+	    }
+	}
+}
+
+// Update Folder Paths
+
 var tasks = {
     'webp-dest1': {
         path: './dest/dest1',
@@ -43,50 +99,5 @@ var tasks = {
     }
 };
 
-//WEBP Convertor
-var converter = function (path) {
-    //console.log(path + '/**/*.' + ext);
-    return gulp.src([path + '/**/*.' + ext])
-        .pipe(changed(path, {extension: '.webp'}))
-        .pipe(plumber())
-        .pipe(logger({
-            before: path + ': Started WEBP Conversion...',
-            after: path + ': WEBP Conversion complete!',
-            extname: '.webp',
-            showChange: true
-        }))
-        .pipe(webp())
-        .pipe(gulp.dest(path));
-}
 
-
-//Create Tasks
-for (var task in tasks) {
-
-    initialTasks.push(task);
-
-    gulp.task(task, function(){
-        //console.log('this.currentStartTaskName: ' + this.currentStartTaskName);
-        //console.log('this.currentRunTaskName: ' + this.currentRunTaskName);
-        return converter(tasks[this.currentRunTaskName].path);
-    });
-
-}
-
-
-gulp.task('webp', initialTasks, function() { 
-
-    for (var task in tasks) {
-        //console.log(task, tasks[task].watchPath, tasks[task].path);
-        gulp.watch(tasks[task].watchPath + '/**/*.' + ext, [task])
-            .on('error', onErr);
-    }
-});
-
-var onErr = function(error) {
-    // silently catch 'ENOENT' error typically caused by renaming watched folders
-    if (error.code === 'ENOENT') {
-        console.log(error)
-        return;
-    }
-}
+webpConvertor.init(tasks);

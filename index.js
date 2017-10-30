@@ -9,7 +9,7 @@ webpConvertor.init(tasks);
 
 if (gulp.tasks.webp) { 
     console.log('gulpfile contains webp tasks!');
-    gulp.start('webp', function(f){
-    	console.log("Task Completed: " + new Date());
+    gulp.start('webp', function(){
+    	console.log("All Tasks Completed: " + new Date());
     });
 }

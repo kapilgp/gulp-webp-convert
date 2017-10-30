@@ -8,7 +8,8 @@
 
 // Include gulp
 var gulp = require('gulp');
-var webp = require('gulp-webp');
+var webp = require('./webp/index');
+//var webp = require('gulp-webp');
 var logger = require('gulp-logger');
 var plumber = require('gulp-plumber');
 var changed = require('gulp-changed');
@@ -29,6 +30,10 @@ gulp.Gulp.prototype._runTask = function (task) {
     _runTask.apply(this, arguments);
 };
 
+var ignoreUnsupportedFiles = [
+	//'!/var/www/html/packages/dest/pleaseconverttheselogosinwebp/Screenshot-from-2016-08-04-10_47_29.png'
+];
+
 //Main Login HERE
 var webpConvertor = {
 
@@ -46,7 +51,7 @@ var webpConvertor = {
 		    gulp.task(task, function(){
 		        //console.log('this.currentStartTaskName: ' + this.currentStartTaskName);
 		        //console.log('this.currentRunTaskName: ' + this.currentRunTaskName);
-		        return self._converter(tasks[this.currentRunTaskName]);
+		        return self._converter(tasks[this.currentRunTaskName], this.currentRunTaskName);
 		    });
 		}
 
@@ -61,20 +66,41 @@ var webpConvertor = {
 		});
 	},
 
-	_converter: function (task) {
+	_converter: function (task, taskName) {
 		var self = this;
 	    //console.log(path + '/**/*.' + ext);
-	    return gulp.src([task.sourcePath + '/**/*.' + self._ext])
+	    var source = Object.assign([], ignoreUnsupportedFiles);
+	    source.push(task.sourcePath + '/**/*.' + self._ext);
+	    //console.log(source);
+	    return gulp.src(source)
+	    	//.pipe(plumber())
 	        .pipe(changed(task.destPath, {extension: '.webp'}))
-	        .pipe(plumber())
+	        
 	        .pipe(logger({
 	            before: task.sourcePath + ': Started WEBP Conversion...',
 	            after: task.sourcePath + ': WEBP Conversion complete!',
 	            extname: '.webp',
-	            dest: '/' + task.destPath,
+	            //dest: '/' + task.destPath,
 	            showChange: true
 	        }))
 	        .pipe(webp())
+	        .on('error', function (err) {
+	            console.error("Error in file: ", err.fileName);
+	            console.error(err.toString());
+	            
+	            //Push files to ignore list
+	            ignoreUnsupportedFiles.push('!' + err.fileName.toString());
+	            
+	            setTimeout(function() {
+	            	console.log(`Re-start Task: ${taskName} : ${new Date()}`);
+	            	gulp.start(taskName, function(){
+				    	console.log(`Task Completed: ${taskName} : ${new Date()}`);
+				    });
+	            }, 1);
+	            
+	            this.emit('end');
+
+	        })
 	        .pipe(gulp.dest(task.destPath));
 	},
 
